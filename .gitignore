@@ -19,8 +19,9 @@
 *.tar.gz
 *.rar
 
-#own stuff
+# project specific stuff
 message.txt
+mapping.txt
 lp_solve
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
