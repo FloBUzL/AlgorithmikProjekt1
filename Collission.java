@@ -17,8 +17,7 @@ public class Collission {
 		this.counter = 1;
 	}
 	
-	public Collission addEntry(MovieData data) {
-		String newLPVar = "x" + String.valueOf(this.counter++);
+	public Collission addEntry(String newLPVar, MovieData data) {
 		this.allVariables.put(newLPVar, data);
 		if(this.firstOccuranceOfTitle.containsKey(data.getTitle())) {
 			String lpVar = this.firstOccuranceOfTitle.get(data.getTitle());
@@ -43,6 +42,11 @@ public class Collission {
 		});
 		
 		return this;
+	}
+	
+	public Collission addEntry(MovieData data) {
+		String newLPVar = "x" + String.valueOf(this.counter++);
+		return this.addEntry(newLPVar, data);
 	}
 	
 	public Stream<String> getAllVariables() {
