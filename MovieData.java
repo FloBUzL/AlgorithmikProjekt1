@@ -30,6 +30,6 @@ public class MovieData {
 	}
 	
 	public String toString() {
-		return this.day + ";" + this.time + ";" + String.valueOf(this.time) + ";" + this.title + ";" + String.valueOf(this.rating); 
+		return this.day + ";" + this.time + ";" + String.valueOf(this.length) + ";" + this.title + ";" + String.valueOf(this.rating); 
 	}
 }
