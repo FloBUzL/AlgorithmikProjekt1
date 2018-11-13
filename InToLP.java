@@ -25,9 +25,22 @@ public class InToLP {
 			System.out.println(variable + " <= 1");
 		});
 		
+		System.out.println();
+		
 		this.collissions.getAllTitleCollissions().keySet().forEach((key) -> {
 			StringBuilder out = new StringBuilder(key);
 			this.collissions.getAllTitleCollissions().get(key).forEach((value) -> {
+				out.append(" + " + value);
+			});
+			out.append(" <= 1");
+			System.out.println(out.toString());
+		});
+		
+		System.out.println();
+		
+		this.collissions.getAllTimeCollissions().keySet().forEach((key) -> {
+			StringBuilder out = new StringBuilder(key);
+			this.collissions.getAllTimeCollissions().get(key).forEach((value) -> {
 				out.append(" + " + value);
 			});
 			out.append(" <= 1");

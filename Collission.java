@@ -6,12 +6,14 @@ public class Collission {
 	private HashMap<String,MovieData> allVariables;
 	private HashMap<String,String> firstOccuranceOfTitle;
 	private HashMap<String,ArrayList<String>> titleCollissions;
+	private HashMap<String,ArrayList<String>> timeCollissions;
 	private int counter;
 	
 	public Collission() {
 		this.allVariables = new HashMap<>();
 		this.firstOccuranceOfTitle = new HashMap<>();
 		this.titleCollissions = new HashMap<>();
+		this.timeCollissions = new HashMap<>();
 		this.counter = 1;
 	}
 	
@@ -28,6 +30,18 @@ public class Collission {
 			this.firstOccuranceOfTitle.put(data.getTitle(), newLPVar);
 		}
 		
+		this.allVariables.forEach((key,val) -> {
+			if(key.equals(newLPVar)) {
+				return;
+			}
+			if(val.getTime().isOverlapping(data.getTime())) {
+				if(!this.timeCollissions.containsKey(newLPVar)) {
+					this.timeCollissions.put(newLPVar, new ArrayList<>());
+				}
+				this.timeCollissions.get(newLPVar).add(key);
+			}
+		});
+		
 		return this;
 	}
 	
@@ -37,5 +51,9 @@ public class Collission {
 	
 	public HashMap<String, ArrayList<String>> getAllTitleCollissions() {
 		return this.titleCollissions;
+	}
+	
+	public HashMap<String, ArrayList<String>> getAllTimeCollissions() {
+		return this.timeCollissions;
 	}
 }

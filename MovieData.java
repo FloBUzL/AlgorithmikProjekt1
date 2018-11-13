@@ -4,6 +4,7 @@ public class MovieData {
 	private int length;
 	private String title;
 	private float rating;
+	private Time timeObject;
 	
 	public MovieData(String day, String time, int length, String title, float rating) {
 		this.day = day;
@@ -11,6 +12,7 @@ public class MovieData {
 		this.length = length;
 		this.title = title;
 		this.rating = rating;
+		this.timeObject = new Time(day, time, length);
 	}
 	
 	public static MovieData createFromInputLine(String line) {
@@ -21,5 +23,9 @@ public class MovieData {
 	
 	public String getTitle() {
 		return this.title;
+	}
+	
+	public Time getTime() {
+		return this.timeObject;
 	}
 }
