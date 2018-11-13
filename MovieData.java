@@ -28,4 +28,8 @@ public class MovieData {
 	public Time getTime() {
 		return this.timeObject;
 	}
+	
+	public String toString() {
+		return this.day + ";" + this.time + ";" + String.valueOf(this.time) + ";" + this.title + ";" + String.valueOf(this.rating); 
+	}
 }

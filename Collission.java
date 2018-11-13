@@ -56,4 +56,8 @@ public class Collission {
 	public HashMap<String, ArrayList<String>> getAllTimeCollissions() {
 		return this.timeCollissions;
 	}
+	
+	public HashMap<String, MovieData> getMapping() {
+		return this.allVariables;
+	}
 }
