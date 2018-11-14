@@ -130,6 +130,14 @@ class Time {
 		
 		return false;
 	}
+	
+	public TimeStamp getEndTime() {
+		return this.end;
+	}
+	
+	public TimeStamp getStartTime() {
+		return this.start;
+	}
 }
 
 class TimeStamp {
@@ -175,6 +183,19 @@ class TimeStamp {
 		}
 		
 		return isGreaterOrEqual;
+	}
+
+	public int compareTo(TimeStamp right) {
+		if(this.isEqualTo(right)) {
+			return 0;
+		}
+		
+		
+		if(this.isGreaterThan(right)) {
+			return 1;
+		}
+		
+		return -1;
 	}
 }
 
