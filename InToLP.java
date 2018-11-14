@@ -23,13 +23,15 @@ public class InToLP {
 	public void printOut() {
 		StringBuilder max = new StringBuilder("max: ");
 		Wrapper<Boolean> following = new Wrapper<>(false);
-		this.collissions.getAllVariables().forEach((variable) -> {
+		
+		this.collissions.getMapping().forEach((variable, data) -> {
 			if(following.getValue()) {
 				max.append(" + ");
 			}
-			max.append(variable);
+			max.append(String.valueOf(data.getRating()) + variable);
 			following.setValue(true);
 		});
+		
 		max.append(";");
 		System.out.println(max);
 		

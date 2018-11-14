@@ -33,6 +33,10 @@ public class MovieData {
 		return this.timeObject;
 	}
 	
+	public float getRating() {
+		return this.rating;
+	}
+	
 	public String toString() {
 		return this.day + ";" + this.time + ";" + String.valueOf(this.length) + ";" + this.title + ";" + String.valueOf(this.rating); 
 	}
