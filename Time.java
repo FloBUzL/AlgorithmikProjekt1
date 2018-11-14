@@ -1,67 +1,73 @@
 
 public class Time {
-	private int dayStart;
-	private int dayEnd;
-	
-	private int hourStart;
-	private int hourEnd;
-	
-	private int minuteStart;
-	private int minuteEnd;
-	
 	private TimeStamp start;
 	private TimeStamp end;
 	
 	public Time(String day, String time, int length) {
+		int dayStart = 0;
+		int dayEnd = 0;
+		int hourStart = 0;
+		int hourEnd = 0;
+		int minuteStart = 0;
+		int minuteEnd = 0;
+		
 		switch(day) {
 			case "Mo":
-				this.dayStart = 1;
+				dayStart = 1;
 			break;
 			case "Di":
-				this.dayStart = 2;
+				dayStart = 2;
 			break;
 			case "Mi":
-				this.dayStart = 3;
+				dayStart = 3;
 			break;
 			case "Do":
-				this.dayStart = 4;
+				dayStart = 4;
 			break;
 			case "Fr":
-				this.dayStart = 5;
+				dayStart = 5;
 			break;
 			case "Sa":
-				this.dayStart = 6;
+				dayStart = 6;
 			break;
 			case "So":
-				this.dayStart = 7;
+				dayStart = 7;
 			break;
 		}
 		
 		String[] timeParts = time.split(":");
-		this.hourStart = Integer.parseInt(timeParts[0]);
-		this.minuteStart = Integer.parseInt(timeParts[1]);
+		hourStart = Integer.parseInt(timeParts[0]);
+		minuteStart = Integer.parseInt(timeParts[1]);
 		
 		int hours = length / 60;
 		int minutes = length % 60;
 		
-		this.hourEnd = this.hourStart + hours;
-		this.minuteEnd = this.minuteEnd + minutes;
-		this.dayEnd = this.dayStart;
-		if(this.minuteEnd >= 60) {
-			this.hourEnd += 1;
-			this.minuteEnd = this.minuteEnd % 60;
+		hourEnd = hourStart + hours;
+		minuteEnd = minuteEnd + minutes;
+		dayEnd = dayStart;
+		if(minuteEnd >= 60) {
+			hourEnd += 1;
+			minuteEnd = minuteEnd % 60;
 		}
 		
-		if(this.hourEnd >= 24) {
-			this.hourEnd = this.hourEnd % 24;
-			this.dayEnd++;
+		if(hourEnd >= 24) {
+			hourEnd = hourEnd % 24;
+			dayEnd++;
 		}
 		
-		this.start = new TimeStamp(this.dayStart, this.hourStart, this.minuteStart);
-		this.end = new TimeStamp(this.dayEnd, this.hourEnd, this.minuteEnd);
+		this.start = new TimeStamp(dayStart, hourStart, minuteStart);
+		this.end = new TimeStamp(dayEnd, hourEnd, minuteEnd);
 	}
 	
 	public boolean isOverlapping(Time otherTime) {
+		if(this.start.isEqualTo(otherTime.start)) {
+			return true;
+		}
+		
+		if(this.end.isEqualTo(otherTime.end)) {
+			return true;
+		}
+		
 		if(this.start.isGreaterThan(otherTime.start) && !this.start.isGreaterThan(otherTime.end)) {
 			return true;
 		}
@@ -94,6 +100,18 @@ class TimeStamp {
 	}
 	
 	public boolean isGreaterThan(TimeStamp otherTimeStamp) {
+		return this.isGreaterThan(otherTimeStamp, false);
+	}
+	
+	public boolean isGreaterThanOrEquals(TimeStamp otherTimeStamp) {
+		return this.isGreaterThan(otherTimeStamp, true);
+	}
+	
+	public boolean isEqualTo(TimeStamp otherTimeStamp) {
+		return (this.day == otherTimeStamp.day && this.hour == otherTimeStamp.hour && this.minute == otherTimeStamp.hour);
+	}
+	
+	public boolean isGreaterThan(TimeStamp otherTimeStamp, boolean isGreaterOrEqual) {
 		if(this.day > otherTimeStamp.day) {
 			return true;
 		} else if(this.day < otherTimeStamp.day) {
@@ -102,14 +120,16 @@ class TimeStamp {
 		
 		if(this.hour > otherTimeStamp.hour) {
 			return true;
-		} else if(this.hour < otherTimeStamp.hour) {
+		} else if(this.hour < otherTimeStamp.minute) {
 			return false;
 		}
 		
 		if(this.minute > otherTimeStamp.hour) {
 			return true;
+		} else if(this.minute < otherTimeStamp.minute) {
+			return false;
 		}
 		
-		return false;
+		return isGreaterOrEqual;
 	}
 }
