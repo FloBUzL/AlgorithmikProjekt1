@@ -8,8 +8,7 @@ public class SolveToOut {
 	private Collission collissions;
 	
 	public static void main(String[] args) throws IOException {
-		SolveToOut Printer = new SolveToOut();
-		Printer.readIn().printOut();
+		new SolveToOut().readIn().printOut();
 	}
 	
 	public SolveToOut readIn() throws IOException {

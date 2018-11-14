@@ -5,8 +5,7 @@ public class InToLP {
 	private Collission collissions;
 	
 	public static void main(String[] args) {
-		InToLP LPMaker = new InToLP();
-		LPMaker.readIn().printOut();
+		new InToLP().readIn().printOut();
 	}
 	
 	public InToLP readIn() {
