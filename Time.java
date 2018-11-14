@@ -9,6 +9,9 @@ public class Time {
 	private int minuteStart;
 	private int minuteEnd;
 	
+	private TimeStamp start;
+	private TimeStamp end;
+	
 	public Time(String day, String time, int length) {
 		switch(day) {
 			case "Mo":
@@ -53,41 +56,58 @@ public class Time {
 			this.hourEnd = this.hourEnd % 24;
 			this.dayEnd++;
 		}
+		
+		this.start = new TimeStamp(this.dayStart, this.hourStart, this.minuteStart);
+		this.end = new TimeStamp(this.dayEnd, this.hourEnd, this.minuteEnd);
 	}
 	
 	public boolean isOverlapping(Time otherTime) {
-		if(this.dayStart == this.dayEnd && otherTime.dayStart == otherTime.dayEnd) {
-			if(this.dayStart != otherTime.dayStart) {
-				return false;
-			}
-			if(this.hourStart > otherTime.hourEnd) {
-				return false;
-			}
-			if(otherTime.hourStart > this.hourEnd) {
-				return false;
-			}
-			if(this.hourStart == otherTime.hourEnd) {
-				if(this.minuteStart >= otherTime.minuteEnd) {
-					return false;
-				} else {
-					return true;
-				}
-			}
-			if(this.hourEnd == otherTime.hourStart) {
-				if(otherTime.minuteStart >= this.minuteEnd) {
-					return false;
-				} else {
-					return true;
-				}
-			}
-			if(this.hourStart >= otherTime.hourStart && this.hourStart <= otherTime.hourEnd) {
-				return true;
-			}
-			if(otherTime.hourStart >= this.hourStart && otherTime.hourStart <= otherTime.hourEnd) {
-				return true;
-			}
-		} else {
-			System.out.println("Not implemented yet!");
+		if(this.start.isGreaterThan(otherTime.start) && !this.start.isGreaterThan(otherTime.end)) {
+			return true;
+		}
+		
+		if(this.end.isGreaterThan(otherTime.start) && !this.end.isGreaterThan(otherTime.end)) {
+			return true;
+		}
+		
+		if(otherTime.start.isGreaterThan(this.start) && !otherTime.start.isGreaterThan(this.end)) {
+			return true;
+		}
+		
+		if(otherTime.end.isGreaterThan(this.start) && !otherTime.end.isGreaterThan(this.end)) {
+			return true;
+		}
+		
+		return false;
+	}
+}
+
+class TimeStamp {
+	private int day;
+	private int hour;
+	private int minute;
+	
+	public TimeStamp(int day, int hour, int minute) {
+		this.day = day;
+		this.hour = hour;
+		this.minute = minute;
+	}
+	
+	public boolean isGreaterThan(TimeStamp otherTimeStamp) {
+		if(this.day > otherTimeStamp.day) {
+			return true;
+		} else if(this.day < otherTimeStamp.day) {
+			return false;
+		}
+		
+		if(this.hour > otherTimeStamp.hour) {
+			return true;
+		} else if(this.hour < otherTimeStamp.hour) {
+			return false;
+		}
+		
+		if(this.minute > otherTimeStamp.hour) {
+			return true;
 		}
 		
 		return false;
