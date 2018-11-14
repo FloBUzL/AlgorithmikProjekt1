@@ -29,7 +29,10 @@ public class SolveToOut {
 			if(line.length() == 0 || line.charAt(0) != 'x') {
 				return;
 			}
-			String key = line.substring(0, 2);
+			
+			int firstSpace = line.indexOf(' ');
+			
+			String key = line.substring(0, firstSpace);
 			int value = Integer.parseInt(line.substring(line.length() - 1));
 			
 			if(value == 1) {
