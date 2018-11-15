@@ -285,3 +285,134 @@ class Collission {
 	}
 }
 
+class SchedulingInstance {
+	private ArrayList<String> includes;
+	private int[] entries;
+	private MovieData[] datas;
+	private int[] lastFittingIndex;
+	
+	public SchedulingInstance() {
+		this.includes = new ArrayList<>();
+		this.entries = null;
+		this.lastFittingIndex = null;
+	}
+	
+	private SchedulingInstance(ArrayList<String> includes) {
+		this.includes = new ArrayList<>(includes);
+		this.entries = null;
+		this.lastFittingIndex = null;
+	}
+	
+	public void addEntry(String entry) {
+		this.includes.add(entry);
+	}
+	
+	public SchedulingInstance clone() {
+		ArrayList<String> includes = new ArrayList<>();
+		this.includes.forEach((str) -> {
+			includes.add(str);
+		});
+		return new SchedulingInstance(includes);
+	}
+	
+	public void print() {
+		StringBuilder out = new StringBuilder();
+		if(this.entries == null) {
+			this.includes.forEach((str) -> {
+				out.append(str + ", ");
+			});
+		} else {
+			for(int i = 0;i < this.entries.length;i++) {
+				out.append(String.valueOf(this.entries[i]) + ", ");
+			}
+		}
+		if(this.lastFittingIndex != null) {
+			out.append(" -> ");
+			for(int i = 0;i < this.lastFittingIndex.length;i++) {
+				out.append(String.valueOf(this.lastFittingIndex[i]) + ", ");
+			}
+		}
+		
+		System.out.println(out);
+	}
+
+	public void setUpIndexList(String[] orderedByEndTime, MovieData[] orderedByEndTimeData, HashMap<String, Integer> variableIndex) {
+		this.entries = new int[this.includes.size()];
+		this.datas = new MovieData[this.includes.size()];
+		int i = 0;
+		for(int j = 0;j < orderedByEndTime.length;j++) {
+			if(this.includes.contains(orderedByEndTime[j])) {
+				this.entries[i] = variableIndex.get(orderedByEndTime[j]);
+				this.datas[i++] = orderedByEndTimeData[j];
+			}
+		}
+	}
+	
+	public void setUpLastFittingIndex() {
+		this.lastFittingIndex = new int[this.entries.length];
+		
+		for(int i = 0;i < this.entries.length;i++) {
+			int currVal = -1;
+			for(int j = 0;j < i;j++) {
+				if(this.datas[i].getTime().getStartTime().isGreaterThanOrEquals(this.datas[j].getTime().getEndTime())) {
+					currVal = j;
+				}
+			}
+			this.lastFittingIndex[i] = currVal;
+		}
+	}
+}
+
+class InstanceIterator {
+	private ArrayList<String> list;
+	private ArrayList<SchedulingInstance> instanceList;
+	private InstanceIterator child;
+	
+	private InstanceIterator(ArrayList<String> list, ArrayList<SchedulingInstance> instanceList) {
+		this.list = list;
+		this.instanceList = instanceList;
+		this.child = null;
+	}
+	
+	public void addChild(ArrayList<String> list) {
+		if(this.child == null) {
+			this.child = new InstanceIterator(list, this.instanceList);
+		} else {
+			this.child.addChild(list);
+		}
+	}
+	
+	public InstanceIterator() {
+		this.list = null;
+		this.instanceList = new ArrayList<>();
+		this.child = null;
+	}
+	
+	private void execute(SchedulingInstance instance) {
+		if(this.list == null) {
+			if(this.child == null) {
+				this.instanceList.add(instance);
+			}
+			this.child.execute();
+			return;
+		}
+		
+		this.list.forEach((str) -> {
+			SchedulingInstance newInstance = instance.clone();
+			newInstance.addEntry(str);
+			if(this.child == null) {
+				this.instanceList.add(newInstance);
+			} else {
+				this.child.execute(newInstance);
+			}
+		});
+	}
+	
+	public void execute() {
+		this.execute(new SchedulingInstance());
+	}
+	
+	public ArrayList<SchedulingInstance> getSchedulingInstances() {
+		return this.instanceList;
+	}
+}
