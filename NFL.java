@@ -7,10 +7,7 @@ import java.util.Set;
 
 public class NFL {
 	private Collission collissions;
-	private String[] orderedByEndTime;
-	private HashMap<String, Integer> variableIndex;
-	private MovieData[] orderedByEndTimeData;
-	private Set<String> excludes;
+	
 	private MovieData[] solution;
 	
 	public static void main(String[] args) throws IOException {
@@ -29,9 +26,9 @@ public class NFL {
 	}
 	
 	public NFL solve() {
-		this.variableIndex = new HashMap<>();
-		this.excludes = new HashSet<>();
-		this.orderedByEndTime = this.collissions.getAllVariables().sorted((str1,str2) -> {
+		DataStorage.variableIndex = new HashMap<>();
+		DataStorage.excludes = new HashSet<>();
+		DataStorage.orderedByEndTime = this.collissions.getAllVariables().sorted((str1,str2) -> {
 			TimeStamp left = this.collissions.getMapping().get(str1).getTime().getEndTime();
 			TimeStamp right = this.collissions.getMapping().get(str2).getTime().getEndTime();
 			
@@ -43,44 +40,20 @@ public class NFL {
 		}).toArray(size -> new String[size]);
 		
 		//this.generalBiggestFittingIndex = new int[this.orderedByEndTime.length];
-		this.orderedByEndTimeData = new MovieData[this.orderedByEndTime.length];
+		DataStorage.orderedByEndTimeData = new MovieData[DataStorage.orderedByEndTime.length];
 		
-		for(int i = 0;i < this.orderedByEndTime.length;i++) {
-			this.variableIndex.put(this.orderedByEndTime[i], i);
-			this.orderedByEndTimeData[i] = this.collissions.getMapping().get(this.orderedByEndTime[i]);
+		for(int i = 0;i < DataStorage.orderedByEndTime.length;i++) {
+			DataStorage.variableIndex.put(DataStorage.orderedByEndTime[i], i);
+			DataStorage.orderedByEndTimeData[i] = this.collissions.getMapping().get(DataStorage.orderedByEndTime[i]);
 		}
 		
 		InstanceIterator iterator = new InstanceIterator();
 		this.collissions.getAllTitleCollissions().forEach((str, list) -> {
 			list.add(str);
-			this.excludes.addAll(list);
+			DataStorage.excludes.addAll(list);
 			iterator.addChild(list);
 		});
-		iterator.execute();
-		
-		Wrapper<Double> max = new Wrapper<Double>(0.0);
-		Wrapper<SchedulingInstance> maxInstance = new Wrapper<SchedulingInstance>(null);
-		iterator.getSchedulingInstances().forEach((instance) -> {
-			this.variableIndex.forEach((str, i) -> {
-				if(this.excludes.contains(str)) {
-					return;
-				}
-				instance.addEntry(str);
-			});
-			instance.setUpIndexList(this.orderedByEndTime, this.orderedByEndTimeData, this.variableIndex);
-			instance.setUpLastFittingIndex();
-			//instance.print();
-			double currVal = instance.solve();
-			if(currVal > max.getValue()) {
-				max.setValue(currVal);
-				if(maxInstance.getValue() != null) {
-					maxInstance.getValue().cleanup();
-				}
-				maxInstance.setValue(instance);
-			}
-		});
-		
-		this.solution = maxInstance.getValue().getSolution();
+		iterator.execute();this.solution = iterator.getOptimalSolution();
 		
 		return this;
 	}

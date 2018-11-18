@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class MovieData {
@@ -360,14 +361,14 @@ class SchedulingInstance {
 		System.out.println(out);
 	}
 
-	public void setUpIndexList(String[] orderedByEndTime, MovieData[] orderedByEndTimeData, HashMap<String, Integer> variableIndex) {
+	public void setUpIndexList() {
 		this.entries = new int[this.includes.size()];
 		this.datas = new MovieData[this.includes.size()];
 		int i = 0;
-		for(int j = 0;j < orderedByEndTime.length;j++) {
-			if(this.includes.contains(orderedByEndTime[j])) {
-				this.entries[i] = variableIndex.get(orderedByEndTime[j]);
-				this.datas[i++] = orderedByEndTimeData[j];
+		for(int j = 0;j < DataStorage.orderedByEndTime.length;j++) {
+			if(this.includes.contains(DataStorage.orderedByEndTime[j])) {
+				this.entries[i] = DataStorage.variableIndex.get(DataStorage.orderedByEndTime[j]);
+				this.datas[i++] = DataStorage.orderedByEndTimeData[j];
 			}
 		}
 	}
@@ -393,11 +394,11 @@ class SchedulingInstance {
 		}
 	}
 	
-	private double getOpt(int index) {
+	private float getOpt(int index) {
 		return index == -1 ? 0 : this.opt[index];
 	}
 	
-	public double solve() {
+	public float solve() {
 		for(int i = 0;i < this.entries.length;i++) {
 			this.opt[i] = (float) Math.max(this.datas[i].getRating() + this.getOpt(this.lastFittingIndex[i]), this.getOpt(i-1));
 		}
@@ -453,7 +454,7 @@ class InstanceIterator {
 	private void execute(SchedulingInstance instance) {
 		if(this.list == null) {
 			if(this.child == null) {
-				this.instanceList.add(instance);
+				this.executeInstance(instance);
 				return;
 			}
 			this.child.execute();
@@ -464,7 +465,7 @@ class InstanceIterator {
 			SchedulingInstance newInstance = instance.clone();
 			newInstance.addEntry(str);
 			if(this.child == null) {
-				this.instanceList.add(newInstance);
+				this.executeInstance(newInstance);
 			} else {
 				this.child.execute(newInstance);
 			}
@@ -475,7 +476,38 @@ class InstanceIterator {
 		this.execute(new SchedulingInstance());
 	}
 	
+	private void executeInstance(SchedulingInstance instance) {
+		DataStorage.variableIndex.forEach((str, i) -> {
+			if(DataStorage.excludes.contains(str)) {
+				return;
+			}
+			instance.addEntry(str);
+		});
+		
+		instance.setUpIndexList();
+		instance.setUpLastFittingIndex();
+		
+		float val = instance.solve();
+		if(val > DataStorage.maxValue) {
+			DataStorage.maxValue = val;
+			DataStorage.maxInstance = instance;
+		}
+	}
+	
+	public MovieData[] getOptimalSolution() {
+		return DataStorage.maxInstance.getSolution();
+	}
+	
 	public ArrayList<SchedulingInstance> getSchedulingInstances() {
 		return this.instanceList;
 	}
+}
+
+class DataStorage {
+	public static String[] orderedByEndTime;
+	public static HashMap<String, Integer> variableIndex;
+	public static MovieData[] orderedByEndTimeData;
+	public static Set<String> excludes;
+	public static SchedulingInstance maxInstance;
+	public static float maxValue = 0;
 }
