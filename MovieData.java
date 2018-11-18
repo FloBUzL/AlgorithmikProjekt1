@@ -290,17 +290,23 @@ class SchedulingInstance {
 	private int[] entries;
 	private MovieData[] datas;
 	private int[] lastFittingIndex;
+	private float[] opt;
+	private ArrayList<MovieData> solution;
 	
 	public SchedulingInstance() {
 		this.includes = new ArrayList<>();
 		this.entries = null;
 		this.lastFittingIndex = null;
+		this.opt = null;
+		this.solution = null;
 	}
 	
 	private SchedulingInstance(ArrayList<String> includes) {
 		this.includes = new ArrayList<>(includes);
 		this.entries = null;
 		this.lastFittingIndex = null;
+		this.opt = null;
+		this.solution = null;
 	}
 	
 	public void addEntry(String entry) {
@@ -350,6 +356,7 @@ class SchedulingInstance {
 	
 	public void setUpLastFittingIndex() {
 		this.lastFittingIndex = new int[this.entries.length];
+		this.opt = new float[this.entries.length];
 		
 		for(int i = 0;i < this.entries.length;i++) {
 			int currVal = -1;
@@ -359,6 +366,37 @@ class SchedulingInstance {
 				}
 			}
 			this.lastFittingIndex[i] = currVal;
+		}
+	}
+	
+	private double getOpt(int index) {
+		return index == -1 ? 0 : this.opt[index];
+	}
+	
+	public double solve() {
+		for(int i = 0;i < this.entries.length;i++) {
+			this.opt[i] = (float) Math.max(this.datas[i].getRating() + this.getOpt(this.lastFittingIndex[i]), this.getOpt(i-1));
+		}
+		
+		return this.getOpt(this.entries.length-1);
+	}
+	
+	public MovieData[] getSolution() {
+		this.solution = new ArrayList<>();
+		this.calcSolution(this.entries.length-1);
+		
+		MovieData[] ret = new MovieData[this.solution.size()];
+		return this.solution.toArray(ret);
+	}
+	
+	private void calcSolution(int index) {
+		if(index == -1) {
+			return;
+		} else if(this.datas[index].getRating() + this.getOpt(this.lastFittingIndex[index]) > this.getOpt(index-1)) {
+			this.solution.add(this.datas[index]);
+			this.calcSolution(this.lastFittingIndex[index]);
+		} else {
+			this.calcSolution(index-1);
 		}
 	}
 }
@@ -392,6 +430,7 @@ class InstanceIterator {
 		if(this.list == null) {
 			if(this.child == null) {
 				this.instanceList.add(instance);
+				return;
 			}
 			this.child.execute();
 			return;

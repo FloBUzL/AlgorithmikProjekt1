@@ -14,6 +14,7 @@ public class NFL {
 	private int[] generalBiggestFittingIndex;
 	private SchedulingInstance[] instances;
 	private Set<String> excludes;
+	private MovieData[] solution;
 	
 	public static void main(String[] args) throws IOException {
 		new NFL().readIn().prepare().solve().printOut();
@@ -67,6 +68,8 @@ public class NFL {
 		});
 		iterator.execute();
 		
+		Wrapper<Double> max = new Wrapper<Double>(0.0);
+		Wrapper<SchedulingInstance> maxInstance = new Wrapper<SchedulingInstance>(null);
 		iterator.getSchedulingInstances().forEach((instance) -> {
 			this.variableIndex.forEach((str, i) -> {
 				if(this.excludes.contains(str)) {
@@ -76,8 +79,15 @@ public class NFL {
 			});
 			instance.setUpIndexList(this.orderedByEndTime, this.orderedByEndTimeData, this.variableIndex);
 			instance.setUpLastFittingIndex();
-			instance.print();
+			//instance.print();
+			double currVal = instance.solve();
+			if(currVal > max.getValue()) {
+				max.setValue(currVal);
+				maxInstance.setValue(instance);
+			}
 		});
+		
+		this.solution = maxInstance.getValue().getSolution();
 		
 		return this;
 	}
@@ -89,6 +99,9 @@ public class NFL {
 	}
 	
 	public void printOut() {
-		
+		for(int i = 0;i < this.solution.length;i++) {
+			System.out.println(this.solution[i].toString());
+			this.solution[i].toString();
+		}
 	}
 }
