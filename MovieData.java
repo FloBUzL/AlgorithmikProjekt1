@@ -87,10 +87,10 @@ class Time {
 		int minutes = length % 60;
 		
 		hourEnd = hourStart + hours;
-		minuteEnd = minuteEnd + minutes;
+		minuteEnd = minuteStart + minutes;
 		dayEnd = dayStart;
 		if(minuteEnd >= 60) {
-			hourEnd += 1;
+			hourEnd += minuteEnd / 60;
 			minuteEnd = minuteEnd % 60;
 		}
 		
@@ -138,6 +138,10 @@ class Time {
 	public TimeStamp getStartTime() {
 		return this.start;
 	}
+	
+	public String toString() {
+		return "Start: " + this.start.toString() + ", Ende: " + this.end.toString();
+	}
 }
 
 class TimeStamp {
@@ -149,6 +153,10 @@ class TimeStamp {
 		this.day = day;
 		this.hour = hour;
 		this.minute = minute;
+	}
+	
+	public String toString() {
+		return "Tag: " + this.day + ", Stunde: " + this.hour + ", Minute: " + this.minute;
 	}
 	
 	public boolean isGreaterThan(TimeStamp otherTimeStamp) {
@@ -165,6 +173,7 @@ class TimeStamp {
 	
 	public boolean isGreaterThan(TimeStamp otherTimeStamp, boolean isGreaterOrEqual) {
 		if(this.day > otherTimeStamp.day) {
+			//System.out.println(this.toString() + ">" + otherTimeStamp.toString());
 			return true;
 		} else if(this.day < otherTimeStamp.day) {
 			return false;
@@ -172,11 +181,11 @@ class TimeStamp {
 		
 		if(this.hour > otherTimeStamp.hour) {
 			return true;
-		} else if(this.hour < otherTimeStamp.minute) {
+		} else if(this.hour < otherTimeStamp.hour) {
 			return false;
 		}
 		
-		if(this.minute > otherTimeStamp.hour) {
+		if(this.minute > otherTimeStamp.minute) {
 			return true;
 		} else if(this.minute < otherTimeStamp.minute) {
 			return false;
@@ -309,6 +318,15 @@ class SchedulingInstance {
 		this.solution = null;
 	}
 	
+	public void cleanup() {
+		this.includes = null;
+		this.entries = null;
+		this.datas = null;
+		this.lastFittingIndex = null;
+		this.opt = null;
+		this.solution = null;
+	}
+	
 	public void addEntry(String entry) {
 		this.includes.add(entry);
 	}
@@ -364,6 +382,12 @@ class SchedulingInstance {
 				if(this.datas[i].getTime().getStartTime().isGreaterThanOrEquals(this.datas[j].getTime().getEndTime())) {
 					currVal = j;
 				}
+			}
+			if(currVal < -1) {
+				System.out.println("******");
+				System.out.println(this.datas[i].toString());
+				System.out.println(this.datas[currVal].toString());
+				System.out.println("******");
 			}
 			this.lastFittingIndex[i] = currVal;
 		}

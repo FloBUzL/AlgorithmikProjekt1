@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,13 +10,11 @@ public class NFL {
 	private String[] orderedByEndTime;
 	private HashMap<String, Integer> variableIndex;
 	private MovieData[] orderedByEndTimeData;
-	private int[] generalBiggestFittingIndex;
-	private SchedulingInstance[] instances;
 	private Set<String> excludes;
 	private MovieData[] solution;
 	
 	public static void main(String[] args) throws IOException {
-		new NFL().readIn().prepare().solve().printOut();
+		new NFL().readIn().solve().printOut();
 	}
 	
 	public NFL readIn() throws IOException {
@@ -31,7 +28,7 @@ public class NFL {
 		return this;
 	}
 	
-	public NFL prepare() {
+	public NFL solve() {
 		this.variableIndex = new HashMap<>();
 		this.excludes = new HashSet<>();
 		this.orderedByEndTime = this.collissions.getAllVariables().sorted((str1,str2) -> {
@@ -45,19 +42,12 @@ public class NFL {
 			return left.compareTo(right);
 		}).toArray(size -> new String[size]);
 		
-		this.generalBiggestFittingIndex = new int[this.orderedByEndTime.length];
+		//this.generalBiggestFittingIndex = new int[this.orderedByEndTime.length];
 		this.orderedByEndTimeData = new MovieData[this.orderedByEndTime.length];
 		
 		for(int i = 0;i < this.orderedByEndTime.length;i++) {
 			this.variableIndex.put(this.orderedByEndTime[i], i);
 			this.orderedByEndTimeData[i] = this.collissions.getMapping().get(this.orderedByEndTime[i]);
-			int currVal = -1;
-			for(int j = 0;j < i;j++) {
-				if(this.orderedByEndTimeData[i].getTime().getStartTime().isGreaterThanOrEquals(this.orderedByEndTimeData[j].getTime().getEndTime())) {
-					currVal = j;
-				}
-			}
-			this.generalBiggestFittingIndex[i] = currVal;
 		}
 		
 		InstanceIterator iterator = new InstanceIterator();
@@ -83,17 +73,14 @@ public class NFL {
 			double currVal = instance.solve();
 			if(currVal > max.getValue()) {
 				max.setValue(currVal);
+				if(maxInstance.getValue() != null) {
+					maxInstance.getValue().cleanup();
+				}
 				maxInstance.setValue(instance);
 			}
 		});
 		
 		this.solution = maxInstance.getValue().getSolution();
-		
-		return this;
-	}
-	
-	public NFL solve() {
-		
 		
 		return this;
 	}
