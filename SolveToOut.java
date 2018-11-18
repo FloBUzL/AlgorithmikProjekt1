@@ -22,6 +22,9 @@ public class SolveToOut {
 		return this;
 	}
 	
+	/**
+	 * maps the lp output to the current solution
+	 */
 	public void printOut() {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		in.lines().forEachOrdered((line) -> {

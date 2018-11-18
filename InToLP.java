@@ -19,6 +19,9 @@ public class InToLP {
 		return this;
 	}
 	
+	/**
+	 * prints out the lp
+	 */
 	public void printOut() {
 		StringBuilder max = new StringBuilder("max: ");
 		Wrapper<Boolean> following = new Wrapper<>(false);
@@ -34,11 +37,18 @@ public class InToLP {
 		max.append(";");
 		System.out.println(max);
 		
+		/**
+		 * the conditions for all variables
+		 */
 		this.collissions.getAllVariables().forEach((variable) -> {
 			System.out.println(variable + " <= 1;");
 			System.out.println(variable + " >= 0;");
 		});
 		
+		/**
+		 * the conditions for the title overlappings
+		 * each title can be chosen not more than once
+		 */
 		this.collissions.getAllTitleCollissions().keySet().forEach((key) -> {
 			StringBuilder out = new StringBuilder(key);
 			this.collissions.getAllTitleCollissions().get(key).forEach((value) -> {
@@ -48,6 +58,10 @@ public class InToLP {
 			System.out.println(out.toString());
 		});
 		
+		/**
+		 * the conditions for the time overlapping
+		 * one cannot watch more than one move at time
+		 */
 		this.collissions.getAllTimeCollissions().keySet().forEach((key) -> {
 			StringBuilder out = new StringBuilder(key);
 			this.collissions.getAllTimeCollissions().get(key).forEach((value) -> {

@@ -3,6 +3,9 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Stream;
 
+/**
+ * holds the data for a movie
+ */
 public class MovieData {
 	private String day;
 	private String time;
@@ -43,7 +46,9 @@ public class MovieData {
 	}
 }
 
-
+/**
+ * holds the data for start and end time 
+ */
 class Time {
 	private TimeStamp start;
 	private TimeStamp end;
@@ -145,6 +150,9 @@ class Time {
 	}
 }
 
+/**
+ * holds an timestamp and a few comparison operations
+ */
 class TimeStamp {
 	private int day;
 	private int hour;
@@ -231,6 +239,10 @@ class Wrapper<T> {
 	}
 }
 
+/**
+ * calculates the collisions of movies
+ * by time and by title
+ */
 class Collission {
 	private HashMap<String,MovieData> allVariables;
 	private HashMap<String,String> firstOccuranceOfTitle;
@@ -295,6 +307,9 @@ class Collission {
 	}
 }
 
+/**
+ * holds and solves an scheduling instance
+ */
 class SchedulingInstance {
 	private ArrayList<String> includes;
 	private int[] entries;
@@ -426,6 +441,9 @@ class SchedulingInstance {
 	}
 }
 
+/**
+ * creates and runs all scheduling instances
+ */
 class InstanceIterator {
 	private ArrayList<String> list;
 	private ArrayList<SchedulingInstance> instanceList;
@@ -503,6 +521,10 @@ class InstanceIterator {
 	}
 }
 
+/**
+ * just a storage for some more or less global data
+ * result of some memory optimizations
+ */
 class DataStorage {
 	public static String[] orderedByEndTime;
 	public static HashMap<String, Integer> variableIndex;

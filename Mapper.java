@@ -20,6 +20,9 @@ public class Mapper {
 		return this;
 	}
 	
+	/**
+	 * prints out the variable and the data content
+	 */
 	public void writeOut() {
 		this.collissions.getMapping().forEach((key, val) -> {
 			System.out.println(key + "\t" + val.toString());

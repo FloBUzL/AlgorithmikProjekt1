@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 
 public class NFL {
 	private Collission collissions;
@@ -25,6 +24,9 @@ public class NFL {
 		return this;
 	}
 	
+	/**
+	 * generates a bunch of lists that are used for calculate the scheduling instances
+	 */
 	public NFL solve() {
 		DataStorage.variableIndex = new HashMap<>();
 		DataStorage.excludes = new HashSet<>();
@@ -58,6 +60,9 @@ public class NFL {
 		return this;
 	}
 	
+	/**
+	 * prints out the calculated optimal solution
+	 */
 	public void printOut() {
 		for(int i = 0;i < this.solution.length;i++) {
 			System.out.println(this.solution[i].toString());
